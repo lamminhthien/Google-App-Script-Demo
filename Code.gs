@@ -2,8 +2,8 @@
 function doGet(e) {
   var action = e.parameter.action;
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  
-  if (action == 'read') {
+
+  if (action == "read") {
     return readData(sheet);
   } else {
     return ContentService.createTextOutput("Invalid action").setMimeType(ContentService.MimeType.TEXT);
@@ -14,8 +14,8 @@ function doGet(e) {
 function doPost(e) {
   var action = e.parameter.action;
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  
-  if (action == 'add') {
+
+  if (action == "add") {
     return addData(e, sheet);
   } else {
     return ContentService.createTextOutput("Invalid action").setMimeType(ContentService.MimeType.TEXT);
@@ -26,31 +26,30 @@ function doPost(e) {
 function readData(sheet) {
   var data = sheet.getDataRange().getValues();
   var jsonData = convertToJson(data);
-  return ContentService.createTextOutput(JSON.stringify(jsonData))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify(jsonData)).setMimeType(ContentService.MimeType.JSON);
 }
 
 // Improved function to add data to the sheet
 function addData(e, sheet) {
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   var newRow = [];
-  
+
   // Find the "Name" column (case-insensitive)
-  var nameColumnIndex = headers.findIndex(header => header.toString().toLowerCase() === 'name');
-  
+  var nameColumnIndex = headers.findIndex((header) => header.toString().toLowerCase() === "name");
+
   if (nameColumnIndex === -1) {
     return ContentService.createTextOutput("Error: 'Name' column not found").setMimeType(ContentService.MimeType.TEXT);
   }
-  
+
   // Prepare the new row data
   for (var i = 0; i < headers.length; i++) {
     var header = headers[i].toString().toLowerCase();
-    newRow[i] = e.parameter[header] || ''; // Use empty string if parameter is not provided
+    newRow[i] = e.parameter[header] || ""; // Use empty string if parameter is not provided
   }
-  
+
   // Add the new row to the sheet
   sheet.appendRow(newRow);
-  
+
   return ContentService.createTextOutput("Data added successfully").setMimeType(ContentService.MimeType.TEXT);
 }
 
